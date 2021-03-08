@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* 清除默认样式 */
+        *{
+            padding: 0;
+            margin: 0;
+        }
+
+        #imgDiv{
+            width: 1256px;
+            height: 460px;
+            margin: 100px auto;
+            padding: 15px 0;
+            background-color: #db5e38;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #imgList{
+            height: 460px;
+            position: absolute;
+            left: 0;
+        }
+
+        /* 去除无序列表的样式 */
+        #imgList li{
+            list-style: none;
+            float: left;
+            padding: 0 15px;
+            background-color: #db5e38;
+        }
+
+        #navDiv{
+            position: absolute;
+            bottom: 25px;
+        }
+        
+        #navDiv a{
+            float: left;
+            width: 20px;
+            height: 20px;
+            margin: 0 10px;
+            background-color: #db5e38;;
+            border-radius: 40%;
+        }
+
+        #navDiv a:hover{
+            background-color: rgba(0, 0, 0, .7);
+        }
+    </style>
+
+    <script src="js/tools.js"></script>
+    <script>
+        window.onload = function(){
+            // 存在图片增加和减少的情况，所以不能将其父元素的宽度写死，用JS控制ul元素的宽度
+            var imgList = document.getElementById("imgList");
+            var imgArr = document.getElementsByTagName("img");
+
+            imgList.style.width = 1256*imgArr.length + "px";
+
+            // 导航点的情况和图片的情况一样，所以他的居中需要用JS写
+            var navDiv = document.getElementById("navDiv");
+            navDiv.style.left = (imgDiv.offsetWidth - navDiv.offsetWidth)/2 + "px";
+            
+            // 第一个导航点默认是选中的
+            var index = 0;
+            var allA = document.getElementsByTagName("a");
+            allA[index].style.backgroundColor = "rgba(0, 0, 0, .7)";
+
+            // 实现点击导航点切换图片
+            for( i = 0 ; i < allA.length ; i++){
+
+                allA[i].num = i;
+
+                allA[i].onclick = function(){
+                    clearInterval(timer);
+                    // 修改图片的路径
+                    index = this.num;
+                    // imgList.style.left = (- imgDiv.offsetWidth * index) + "px";
+                    
+                    setA();
+                    move(imgList, "left", - imgDiv.offsetWidth * index, 600, function(){
+                        autoChange();
+                    });
+                };
+            }
+
+            // 设置自动切换图片 
+            var timer
+            function autoChange(){
+                timer = setInterval(function(){
+                index++;
+                // if(index >= imgArr.length){
+                //     index = 0;
+                // };
+                setA();
+                move(imgList, "left", - imgDiv.offsetWidth * index, 150, function(){});
+                },3000);
+            };
+            autoChange();
+
+            // 构造一个函数来设置a被选中的颜色
+            function setA(){
+                if(index >= imgArr.length - 1 ){
+                    index = 0;
+                    imgList.style.left = 0;
+                };
+                for(i=0; i<allA.length; i++){
+                    allA[i].style.backgroundColor = "";
+                };
+                allA[index].style.backgroundColor = "rgba(0, 0, 0, .7)";
+            }
+        };
+    </script>
+</head>
+<body>
+    <!-- 
+        搭建网页的框架
+    -->
+    <div id="imgDiv">
+        <ul id="imgList">
+            <li><img src="./img/1.webp" /></li>
+            <li><img src="./img/2.webp" /></li>
+            <li><img src="./img/3.webp" /></li>
+            <li><img src="./img/4.webp" /></li>
+            <li><img src="./img/1.webp" /></li>
+        </ul>
+
+        <div id="navDiv">
+            <a href="javascript:;"></a>
+            <a href="javascript:;"></a>
+            <a href="javascript:;"></a>
+            <a href="javascript:;"></a>
+        </div>
+    </div>
+</body>
+</html>
